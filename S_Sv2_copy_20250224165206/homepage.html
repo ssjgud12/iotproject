@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Security System</title>
+   <style>
+
+body { background-color: DodgerBlue; text-align: center; font-family: Arial; }
+    h1 { color: navy; }
+    p { font-size: 25px; color: navy; }
+    button { font-size: 20px; padding: 10px; cursor: pointer; }
+
+   </style>
+    <script>
+        var socket;
+        function initWebSocket() {
+      socket = new WebSocket("ws://" + window.location.hostname + "/ws");
+
+      socket.onopen = function() {
+        console.log("WebSocket connected");
+      };
+
+      socket.onmessage = function(event) 
+      {
+        var data = JSON.parse(event.data);
+        if (data.Date !== undefined) 
+        {
+          document.getElementById("DateValue").innerText = data.Date;
+        }
+        if (data.Time !== undefined) 
+        {
+          document.getElementById("TimeValue").innerText = data.Time;
+        }
+        if (data.Rled !== undefined)
+        {
+          document.getElementById("RledStatus").innerText =  data.Rled ? "ON" : "OFF" ; 
+        }
+        if (data.Yled !== undefined)
+        {
+          document.getElementById("YledStatus").innerText =  data.Yled ? "ON" : "OFF" ; 
+        }
+        if (data.Distance !== undefined) 
+        {
+          document.getElementById("DistanceValue").innerText = data.Distance;
+        }
+      };
+      socket.onclose = function() {
+        console.log("WebSocket disconnected, retrying...");
+        setTimeout(initWebSocket, 10000);
+      };
+
+      function toggleDistance() {
+      if (socket && socket.readyState === WebSocket.OPEN) {
+        socket.send("toggleDistance");
+      }
+    }
+
+      function toggleRLED() {
+      if (socket && socket.readyState === WebSocket.OPEN) {
+        socket.send("toggleRLED");
+      }
+    }
+    function toggleYLED() {
+      if (socket && socket.readyState === WebSocket.OPEN) {
+        socket.send("toggleYLED");
+      }
+    }
+
+    function Date() {
+      if (socket && socket.readyState === WebSocket.OPEN) {
+        socket.send("toggleDate");
+      }
+    }
+
+    function toggleTime() {
+      if (socket && socket.readyState === WebSocket.OPEN) {
+        socket.send("toggleTime");
+      }
+    }
+      window.onload = initWebSocket;
+    } 
+    </script>
+</head>
+<body>
+ <h1> Alarm State & Readings </h1>
+ <p> Date <span id="DateValue">Connecting....</span></p>
+ <p> Time <span id="TimeValue">Connecting....</span></p>
+ 
+ <button onclick="toggleYLED()">Alarm mode On</button>
+ <button onclick="toggleRLED()">Alarm mode Off</button>
+</body>
+</html>
