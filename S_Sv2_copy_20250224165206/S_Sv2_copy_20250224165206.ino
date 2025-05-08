@@ -92,10 +92,10 @@ void loop() {
  delay(1); // Update every second
  // Clears the trigPin
  digitalWrite(trigPin, LOW);
- delay(2000);
- // Sets the trigPin on HIGH state for 2 seconds
+ delay_ms(2);
+ // Sets the trigPin on HIGH state for 10 microseconds
  digitalWrite(trigPin, HIGH);
- delay(2000);
+ delay_ms(10);
  digitalWrite(trigPin, LOW);
  // Reads the echoPin, returns the sound wave travel time in microseconds
  duration = pulseIn(echoPin, HIGH);
